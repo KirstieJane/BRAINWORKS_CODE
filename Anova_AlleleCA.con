@@ -1,0 +1,8 @@
+/NumWaves 4
+/NumContrasts 4
+
+/Matrix 
+1 1 -1 -1
+1 -1 1 -1
+1 -1 -1 1
+-1 1 1 -1
