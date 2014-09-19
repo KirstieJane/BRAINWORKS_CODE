@@ -73,60 +73,61 @@ for dti_scan in DTI_64D_1A DTI_64D_iso_1000; do
 
         SUBJECTS_DIR=${surfer_dir}/../
         surf_sub=`basename ${surfer_dir}`
+        
+        if [[ -d ${dti_dir} ]]; then
 
 #=============================================================================
 # REGISTER B0 TO FREESURFER SPACE
 #=============================================================================
-        # The first step is ensuring that the dti_ec (B0) file
-        # has been registered to freesurfer space
-        if [[ ! -f ${reg_dir}/diffB0_TO_surf.dat ]]; then
-            bbregister --s ${surf_sub} \
-                       --mov ${dti_dir}/dti_ec.nii.gz \
-                       --init-fsl \
-                       --reg ${reg_dir}/diffB0_TO_surf.dat \
-                       --t2
-        fi
-
-#=============================================================================
-# TRANSFORM DTI MEASURES FILES TO FREESURFER SPACE
-#=============================================================================
-        # If the dti measure file doesn't exist yet in the <surfer_dir>/mri folder
-        # then you have to make it
-        for measure in FA MD MO L1 L23 sse; do
-        
-            measure_file_dti=`ls -d ${dti_dir}/FDT/*_${measure}.nii.gz 2> /dev/null`
-            if [[ ! -f ${measure_file_dti} ]]; then 
-                echo "${measure} file doesn't exist in dti_dir, please check"
-                usage
+            # The first step is ensuring that the dti_ec (B0) file
+            # has been registered to freesurfer space
+            if [[ ! -f ${reg_dir}/diffB0_TO_surf.dat ]]; then
+                bbregister --s ${surf_sub} \
+                           --mov ${dti_dir}/dti_ec.nii.gz \
+                           --init-fsl \
+                           --reg ${reg_dir}/diffB0_TO_surf.dat \
+                           --t2
             fi
+
+    #=============================================================================
+    # TRANSFORM DTI MEASURES FILES TO FREESURFER SPACE
+    #=============================================================================
+            # If the dti measure file doesn't exist yet in the <surfer_dir>/mri folder
+            # then you have to make it
+            for measure in FA MD MO L1 L23 sse; do
             
-            # If the measure file has particularly small values
-            # then multiply this file by 1000 first
-            if [[ "MD L1 L23" =~ ${measure} ]]; then
-                if [[ ! -f ${measure_file_dti/.nii/_mul1000.nii} ]]; then
-                    fslmaths ${measure_file_dti} -mul 1000 ${measure_file_dti/.nii/_mul1000.nii}
+                measure_file_dti=`ls -d ${dti_dir}/FDT/*_${measure}.nii.gz 2> /dev/null`
+                if [[ ! -f ${measure_file_dti} ]]; then 
+                    echo "${measure} file doesn't exist in dti_dir, please check"
+                    usage
                 fi
-                measure_file_dti=${measure_file_dti/.nii/_mul1000.nii}
-            fi
-            
-            # Now transform this file to freesurfer space
-            if [[ ! -f ${surfer_dir}/mri/${measure}.mgz ]]; then
                 
-                mkdir -p ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/
+                # If the measure file has particularly small values
+                # then multiply this file by 1000 first
+                if [[ "MD L1 L23" =~ ${measure} ]]; then
+                    if [[ ! -f ${measure_file_dti/.nii/_mul1000.nii} ]]; then
+                        fslmaths ${measure_file_dti} -mul 1000 ${measure_file_dti/.nii/_mul1000.nii}
+                    fi
+                    measure_file_dti=${measure_file_dti/.nii/_mul1000.nii}
+                fi
                 
-                echo "    Registering ${measure} file to freesurfer space"
-                mri_vol2vol --mov ${measure_file_dti} \
-                            --targ ${surfer_dir}/mri/T1.mgz \
-                            --o ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
-                            --reg ${reg_dir}/diffB0_TO_surf.dat \
-                            --no-save-reg
+                # Now transform this file to freesurfer space
+                if [[ ! -f ${surfer_dir}/mri/${measure}.mgz ]]; then
+                    
+                    mkdir -p ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/
+                    
+                    echo "    Registering ${measure} file to freesurfer space"
+                    mri_vol2vol --mov ${measure_file_dti} \
+                                --targ ${surfer_dir}/mri/T1.mgz \
+                                --o ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
+                                --reg ${reg_dir}/diffB0_TO_surf.dat \
+                                --no-save-reg
 
-            else
-                echo "    ${measure} file already in freesurfer space"
-               
-            fi
-        done
-
+                else
+                    echo "    ${measure} file already in freesurfer space"
+                   
+                fi
+            done
         
 #=============================================================================
 # EXTRACT THE STATS FROM THE SEGMENTATION FILES
@@ -137,45 +138,46 @@ for dti_scan in DTI_64D_1A DTI_64D_iso_1000; do
 #     lobesStrict
 #=============================================================================
   
-        for measure in FA MD MO L1 L23 sse; do
-            if [[ -f ${surfer_dir}/mri/${measure}.mgz ]]; then
+            for measure in FA MD MO L1 L23 sse; do
+                if [[ -f ${surfer_dir}/mri/${measure}.mgz ]]; then
 
-                #=== wmparc
-                if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_wmparc.stats ]]; then
-                    mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
-                                 --seg ${surfer_dir}/mri/wmparc.mgz \
-                                 --ctab ${FREESURFER_HOME}/WMParcStatsLUT.txt \
-                                 --sum ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_wmparc.stats \
-                                 --pv ${surfer_dir}/mri/norm.mgz
+                    #=== wmparc
+                    if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_wmparc.stats ]]; then
+                        mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
+                                     --seg ${surfer_dir}/mri/wmparc.mgz \
+                                     --ctab ${FREESURFER_HOME}/WMParcStatsLUT.txt \
+                                     --sum ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_wmparc.stats \
+                                     --pv ${surfer_dir}/mri/norm.mgz
+                    fi
+                    
+                    #=== aseg
+                    if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_aseg.stats ]]; then
+                        mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
+                                     --seg ${surfer_dir}/mri/aseg.mgz \
+                                     --sum ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_aseg.stats \
+                                     --pv ${surfer_dir}/mri/norm.mgz \
+                                     --ctab ${FREESURFER_HOME}/ASegStatsLUT.txt 
+                    fi
+                    
+                    #=== lobesStrict
+                    if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_lobesStrict.stats ]]; then
+                        mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
+                                     --seg ${surfer_dir}/mri/lobes+aseg.mgz \
+                                     --sum ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_lobesStrict.stats \
+                                     --pv ${surfer_dir}/mri/norm.mgz \
+                                     --ctab ${lobes_ctab}
+                    
+                    fi
+                                    
+                else
+                    echo "${measure} file not transformed to Freesurfer space"
                 fi
-                
-                #=== aseg
-                if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_aseg.stats ]]; then
-                    mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
-                                 --seg ${surfer_dir}/mri/aseg.mgz \
-                                 --sum ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_aseg.stats \
-                                 --pv ${surfer_dir}/mri/norm.mgz \
-                                 --ctab ${FREESURFER_HOME}/ASegStatsLUT.txt 
-                fi
-                
-                #=== lobesStrict
-                if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_lobesStrict.stats ]]; then
-                    mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
-                                 --seg ${surfer_dir}/mri/lobes+aseg.mgz \
-                                 --sum ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_lobesStrict.stats \
-                                 --pv ${surfer_dir}/mri/norm.mgz \
-                                 --ctab ${lobes_ctab}
-                
-                fi
-                                
-            else
-                echo "${measure} file not transformed to Freesurfer space"
-            fi
-        done
+            done
 
 #=============================================================================
 # CLOSE THE DTI SCAN LOOPS
 #=============================================================================
+        fi
     done
 done
     
