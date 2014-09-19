@@ -139,8 +139,10 @@ for dti_scan in DTI_64D_1A DTI_64D_iso_1000; do
 #=============================================================================
   
             for measure in FA MD MO L1 L23 sse; do
-                if [[ -f ${surfer_dir}/mri/${measure}.mgz ]]; then
+                if [[ -f ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz ]]; then
 
+                    mkdir -p ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/
+                    
                     #=== wmparc
                     if [[ ! -f ${surfer_dir}/stats/${dti_scan}/DTI_${scan_number}/${measure}_wmparc.stats ]]; then
                         mri_segstats --i ${surfer_dir}/mri/${dti_scan}/DTI_${scan_number}/${measure}.mgz \
