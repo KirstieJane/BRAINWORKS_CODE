@@ -68,7 +68,7 @@ for dti_scan in DTI_64D_1A DTI_64D_iso_1000; do
 # SET A COUPLE OF USEFUL VARIABLES
 #=============================================================================
         surfer_dir=${data_dir}/SUB_DATA/${sub}/MPRAGE/SURF/
-        dti_dir=${data_dir}/SUB_DATA/${sub}/DTI/${dti_scan}/DTI_${scan_number}/
+        dti_dir=${data_dir}/SUB_DATA/${sub}/${dti_scan}/DTI_${scan_number}/
         reg_dir=${data_dir}/SUB_DATA/${sub}/REG/${dti_scan}/DTI_${scan_number}/
 
         SUBJECTS_DIR=${surfer_dir}/../
