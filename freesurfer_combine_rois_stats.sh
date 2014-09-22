@@ -54,7 +54,7 @@ for seg in aseg wmparc lobesStrict ; do
 
             # Write out the mean value for the measure
             asegstats2table --inputs ${inputs[@]} \
-                            -t ${data_dir}/FS_ROIS/${dti_scan}/SEG_${measure}_${seg}_mean_temp.csv \
+                            -t ${data_dir}/FS_ROIS/SEG_${measure}_${seg}_mean_temp.csv \
                             -d comma \
                             --common-segs \
                             --meas mean
