@@ -33,7 +33,7 @@
 # T1 images and FreeSurfer segmentations are expected to be found here
 # 
 # ===== SET SUBJECT DIR ======
-setenv SUBJECTS_DIR ####MPRAGE_DIR####/
+setenv SUBJECTS_DIR /imaging/kw02/BrainWorks//SUB_DATA/306_A1//MPRAGE//
 
 #-----------------------------------------------------------------------------
 # Output directory where trac-all results will be saved
