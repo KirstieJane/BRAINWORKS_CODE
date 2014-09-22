@@ -59,7 +59,7 @@ set subjlist = (SURF)
 # but then the gradient table and b-value table must be specified (see below)
 #
 # ===== SET DTI FILE ======
-set dcmroot = ####DATA_DIR####/SUB_DATA/####SUBID####/###DTI_SCAN###/
+set dcmroot = ####DATA_DIR####/SUB_DATA/####SUBID####/####DTI_SCAN####/
 set dcmlist = (dti.nii.gz)
 
 #-----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ set dcmlist = (dti.nii.gz)
 # Default: Read from DICOM header
 #
 # ===== SET BVECS FILE ======
-set bvecfile = ####DATA_DIR####/SUB_DATA/####SUBID####/###DTI_SCAN###/bvecs_orig
+set bvecfile = ####DATA_DIR####/SUB_DATA/####SUBID####/####DTI_SCAN####/bvecs_orig
 
 #-----------------------------------------------------------------------------
 # Diffusion b-value table
@@ -93,7 +93,7 @@ set bvecfile = ####DATA_DIR####/SUB_DATA/####SUBID####/###DTI_SCAN###/bvecs_orig
 # Default: Read from DICOM header
 #
 # ===== SET BVALS FILE ======
-set bvalfile = ####DATA_DIR####/SUB_DATA/####SUBID####/###DTI_SCAN###/bvals
+set bvalfile = ####DATA_DIR####/SUB_DATA/####SUBID####/####DTI_SCAN####/bvals
 
 #-----------------------------------------------------------------------------
 # Perform registration-based B0-inhomogeneity compensation?
