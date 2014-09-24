@@ -60,14 +60,14 @@ for seg in aseg wmparc lobesStrict ; do
                             --meas mean
                         
             # Create the sub_id column:
-            echo "sub_id,scan_size,scan_number" > ${data_dir}/FS_ROIS/sub_id_col
+            echo "SubID,ImagingID,scan_size,scan_number" > ${data_dir}/FS_ROIS/sub_id_col
             for sub in ${inputs[@]}; do
                 sub=${sub/${data_dir}/}
                 dti_scan=${sub/${sub:0:35}/}
                 scan_size=${dti_scan%%/*}
                 scan_number=${dti_scan%/*}
                 scan_number=${scan_number#*/}
-                echo ${sub:10:3},${scan_size},${scan_number} >> ${data_dir}/FS_ROIS/sub_id_col
+                echo ${sub:10:6},${sub:10:3},${scan_size},${scan_number} >> ${data_dir}/FS_ROIS/sub_id_col
             done
         
             # Now paste the data together
