@@ -123,8 +123,9 @@ for parc in aparc lobesStrict; do
                     > ${data_dir}/FS_ROIS/PARC_${parc}_${measure}_${hemi}_temp.csv 
            
             # Create the sub_id column:
-            echo "SubID,ImagingID," > ${data_dir}/FS_ROIS/sub_id_col
-            for sub in `cat ${data_dir}/FS_ROIS/sub_id_col_temp`; do
+            echo "SubID,ImagingID" > ${data_dir}/FS_ROIS/sub_id_col
+            subs=(`cat ${data_dir}/FS_ROIS/sub_id_col_temp`)
+            for sub in ${subs[@]:1:100000}; do
                 sub=${sub/${data_dir}/}
                 echo ${sub:10:6},${sub:10:3} >> ${data_dir}/FS_ROIS/sub_id_col
             done
