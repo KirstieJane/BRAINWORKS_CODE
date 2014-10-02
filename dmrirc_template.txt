@@ -33,13 +33,13 @@
 # T1 images and FreeSurfer segmentations are expected to be found here
 # 
 # ===== SET SUBJECT DIR ======
-setenv SUBJECTS_DIR /imaging/kw02/BrainWorks//SUB_DATA/306_A1//MPRAGE//
+setenv SUBJECTS_DIR ####MPRAGE_DIR####
 
 #-----------------------------------------------------------------------------
 # Output directory where trac-all results will be saved
 # Default: Same as SUBJECTS_DIR
-# ===== KEEP DEFAULT ======
-# set dtroot = /path/to/tracts/of/ducks
+# ===== SET DTI OUTPUT DIR ======
+set dtroot = ####MPRAGE_DIR####/SURF/####DTI_SCAN####/
 
 #-----------------------------------------------------------------------------
 # Subject IDs
