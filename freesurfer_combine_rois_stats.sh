@@ -98,7 +98,7 @@ done
 
 subjects=(`ls -d ${data_dir}/SUB_DATA/*/MPRAGE/SURF/ 2> /dev/null`)
 
-for parc in aparc 500.aparc lobesStrict; do
+for parc in aparc lobesStrict; do
 
     for measure in area volume thickness meancurv gauscurv foldind curvind; do
     
@@ -112,19 +112,23 @@ for parc in aparc 500.aparc lobesStrict; do
                                 --meas ${measure} \
                                 -d comma \
                                 --common-parcs \
+                                --skip \
                                 -t ${data_dir}/FS_ROIS/PARC_${parc}_${measure}_${hemi}_temptemp.csv 
                                 
-            # Drop the first column because it isn't necessary
+            # Save the first column separately so you can create the subid from it
+            cut -d, -f1 ${data_dir}/FS_ROIS/PARC_${parc}_${measure}_${hemi}_temptemp.csv \
+                    > ${data_dir}/FS_ROIS/sub_id_col_temp
+            
             cut -d, -f2- ${data_dir}/FS_ROIS/PARC_${parc}_${measure}_${hemi}_temptemp.csv \
                     > ${data_dir}/FS_ROIS/PARC_${parc}_${measure}_${hemi}_temp.csv 
            
-        done
-        
-        # Create the sub_id column:
-        echo "sub_id" > ${data_dir}/FS_ROIS/sub_id_col
-        for sub in ${subjects[@]}; do
-            sub=${sub/${data_dir}/}
-            echo ${sub:10:3} >> ${data_dir}/FS_ROIS/sub_id_col
+            # Create the sub_id column:
+            echo "SubID,ImagingID," > ${data_dir}/FS_ROIS/sub_id_col
+            for sub in `cat ${data_dir}/FS_ROIS/sub_id_col_temp`; do
+                sub=${sub/${data_dir}/}
+                echo ${sub:10:6},${sub:10:3} >> ${data_dir}/FS_ROIS/sub_id_col
+            done
+
         done
         
         # Now paste the data together
